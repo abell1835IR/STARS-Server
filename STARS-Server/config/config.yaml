@@ -1,0 +1,32 @@
+app:
+  name: "STARS Server"
+  version: "1.0.0"
+  debug: true
+  environment: "development"
+
+telegram_bot:
+  enabled: false
+  token: "-"
+  chat_id: 
+
+web:
+  port: 8080
+  host: "0.0.0.0"
+
+database:
+  enabled: true
+  path: "./data/stars.db"
+
+security:
+  session_key: "-"
+
+mqtt:
+  port: 1883
+  broker: "local host"
+  topic: "noaa-apt"
+
+logging:
+  level: "INFO"
+  file: "./logs/server.log"
+
+

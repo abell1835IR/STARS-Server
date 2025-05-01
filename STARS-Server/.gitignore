@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtualenv
+venv/
+.env/
+
+# Databases
+*.db
+data/
+
+# Logs
+logs/
+
+# IDE files
+.vscode/
+.idea/
