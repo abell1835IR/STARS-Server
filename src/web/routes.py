@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
-from src.core.database import SessionLocal, Image as ImageModel, User as UserModel
+from core.database import SessionLocal, Image as ImageModel, User as UserModel
 
 router = APIRouter()
 
@@ -41,5 +41,5 @@ async def public_feed(request: Request, db: SessionLocal = Depends(get_db_sessio
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
-router = APIRouter()
+#router = APIRouter()
 

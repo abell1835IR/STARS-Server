@@ -4,11 +4,11 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
-from src.core.config import Config
-from src.core.database import init_db
-from src.core.logger import logger
-from src.auth.routes import router as auth_router
-from src.web.routes import router as web_router
+from core.config import Config
+from core.database import init_db
+from core.logger import logger
+from auth.routes import router as auth_router
+from web.routes import router as web_router
 
 def create_app() -> FastAPI:
     init_db()

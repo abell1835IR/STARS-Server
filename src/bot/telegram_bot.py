@@ -1,5 +1,5 @@
 from telegram.ext import Application
-from src.core.config import ConfigLoader
+from core.config import ConfigLoader
 
 class TelegramBot:
     def __init__(self):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
-from src.core.database import SessionLocal, Image as ImageModel
+from core.database import SessionLocal, Image as ImageModel
 from . import crud
 
 router = APIRouter()

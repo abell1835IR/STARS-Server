@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from src.core.database import User, Image
+from core.database import User, Image
 from .security import get_password_hash, verify_password
 
 def create_user(db: Session, username: str, password: str, country: str = None):
