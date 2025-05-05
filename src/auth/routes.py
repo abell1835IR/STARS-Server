@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Request, Depends, Form, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from core.database import SessionLocal, Image as ImageModel
-from . import crud
+from core.database import SessionLocal, User
+from . import crud, security
 
 router = APIRouter()
+templates = Jinja2Templates(directory="src/web/templates")
 
 def get_db():
     db = SessionLocal()
@@ -16,45 +18,38 @@ def get_db():
 def get_current_user(request: Request, db: Session = Depends(get_db)):
     user_id = request.session.get("user_id")
     if not user_id:
-        raise HTTPException(status_code=303, detail="Not authenticated")
-    user = crud.get_user_by_username(db, username=None) 
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    user = db.query(User).get(user_id)
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
     return user
 
-@router.get("/signup", response_class=HTMLResponse)
-async def signup_form():
-    return """
-    <h2>Signup</h2>
-    <form action="/signup" method="post">
-      <input name="username" placeholder="Username" required><br>
-      <input name="password" type="password" placeholder="Password" required><br>
-      <input name="country" placeholder="Country (optional)"><br>
-      <button>Signup</button>
-    </form>"""
+@router.get("/signup")
+def signup_form(request: Request):
+    return templates.TemplateResponse("auth/signup.html", {"request": request})
 
 @router.post("/signup")
-async def signup(
+def signup(
+    request: Request,
     username: str = Form(...),
     password: str = Form(...),
     country: str = Form(None),
     db: Session = Depends(get_db)
 ):
     if crud.get_user_by_username(db, username):
-        return HTMLResponse("Username taken", status_code=400)
+        return templates.TemplateResponse("auth/signup.html", {
+            "request": request,
+            "error": "Username already taken"
+        })
     crud.create_user(db, username, password, country)
     return RedirectResponse("/login", status_code=303)
 
-@router.get("/login", response_class=HTMLResponse)
-async def login_form():
-    return """
-    <h2>Login</h2>
-    <form action="/login" method="post">
-      <input name="username" placeholder="Username" required><br>
-      <input name="password" type="password" placeholder="Password" required><br>
-      <button>Login</button>
-    </form>"""
+@router.get("/login")
+def login_form(request: Request):
+    return templates.TemplateResponse("auth/login.html", {"request": request})
 
 @router.post("/login")
-async def login(
+def login(
     request: Request,
     username: str = Form(...),
     password: str = Form(...),
@@ -62,23 +57,14 @@ async def login(
 ):
     user = crud.authenticate_user(db, username, password)
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        return templates.TemplateResponse("auth/login.html", {
+            "request": request,
+            "error": "Invalid credentials"
+        })
     request.session["user_id"] = user.id
     return RedirectResponse("/dashboard", status_code=303)
 
-@router.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request, db: Session = Depends(get_db)):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        return RedirectResponse("/login", status_code=303)
-    images = db.query(ImageModel).filter_by(user_id=user_id).all()
-    html = "<h1>Your Gallery</h1>"
-    for img in images:
-        html += f"<div><h3>{img.satellite_name} at {img.timestamp}</h3>"
-        html += f"<img src='/static/uploads/{img.filename}' style='max-width:200px;'/></div>"
-    return HTMLResponse(html)
-
 @router.get("/logout")
-async def logout(request: Request):
+def logout(request: Request):
     request.session.clear()
     return RedirectResponse("/", status_code=303)

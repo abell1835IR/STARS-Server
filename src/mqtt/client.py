@@ -1,40 +1,49 @@
-import paho.mqtt.client as mqtt
-from ..core.logger import logger
-from ..core.config import Config
+import base64
+import json
+from datetime import datetime, timezone
+from pathlib import Path
 
-class MQTTClient:
-    def __init__(self):
-        self.config = Config()
-        self.client = mqtt.Client()
-        self.subscribers = []
-        self._setup_callbacks()
-        self.db = Database()
+from sqlalchemy.orm import Session
+from core.database import SessionLocal, Image
 
-    def _setup_callbacks(self):
-        self.client.on_connect = self._on_connect
-        self.client.on_message = self._on_message
+class ImageStorageHandler:
+    def __init__(self, save_dir="received"):
+        self.save_dir = Path(save_dir)
+        self.save_dir.mkdir(parents=True, exist_ok=True)
 
-    def add_subscriber(self, callback):
-        self.subscribers.append(callback)
+    def handle(self, payload: dict) -> None:
+        db: Session = SessionLocal()
+        try:
+            satellite = payload.get("satellite", "unknown_sat")
+            location = payload.get("location", "unknown_loc")
+            location_safe = location.replace(",", "").replace(" ", "_")
+            timestamp = payload.get("timestamp", datetime.now(timezone.utc).isoformat())
+            ts = timestamp.replace(":", "-").replace("T", "_").split(".")[0]
 
-    def _process_message(self, payload):
-        image_data = self._decode_payload(payload)
-        if self.config.get('database.enabled'):
-            self._store_image(image_data)
-        return image_data
+            filename = f"{satellite}_{location_safe}_{ts}.png"
+            filepath = self.save_dir / filename
 
-    @abstractmethod
-    def _decode_payload(self, payload):
-        pass
+            image_data = payload["image_data"]
+            decoded = base64.b64decode(image_data)
 
-    def _store_image(self, image_data):
-        session = self.db.get_session()
-        if session:
-            new_image = SatelliteImage(
-                timestamp=datetime.now(),
-                image_path=image_data['path'],
-                user_id=image_data.get('user_id')
+            with open(filepath, "wb") as f:
+                f.write(decoded)
+
+            # Save record to database
+            db_image = Image(
+                filename=filename,
+                satellite_name=satellite,
+                location=location,
+                timestamp=datetime.fromisoformat(timestamp),
+                is_shared=True,
+                user_id=None  # MQTT uploads aren't linked to a registered user
             )
-            session.add(new_image)
-            session.commit()
-            session.close()
+            db.add(db_image)
+            db.commit()
+
+            print(f"Image saved to {filepath} and recorded in DB")
+
+        except Exception as e:
+            print(f"Failed to process MQTT payload: {e}")
+        finally:
+            db.close()

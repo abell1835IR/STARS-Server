@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STARS - Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="signup-container">
+    <div class="flex flex-col items-center mb-8">
+      <div class="satellite-icon mb-4"></div>
+      <h1 class="text-4xl mb-2 pixel-text glow" style="font-family:'Press Start 2P',cursive">
+        STARS
+      </h1>
+      <p class="text-xl pixel-text">Satellite Tracking &amp; Reception System</p>
+      <div class="header-divider w-full my-4"></div>
+      <h2 class="text-2xl pixel-text">NEW USER REGISTRATION</h2>
+    </div>
+    <form method="post" action="/signup" class="space-y-6">
+      <div>
+        <label for="username" class="block text-xl mb-2 pixel-text">CREATE USERNAME</label>
+        <input type="text" id="username" name="username"
+               class="input-field pixel-text" required>
+      </div>
+      <div>
+        <label for="password" class="block text-xl mb-2 pixel-text">SET PASSWORD</label>
+        <input type="password" id="password" name="password"
+               class="input-field pixel-text" required>
+      </div>
+      <div>
+        <label for="country" class="block text-xl mb-2 pixel-text">COUNTRY (optional)</label>
+        <input type="text" id="country" name="country"
+               class="input-field pixel-text">
+      </div>
+      <button type="submit"
+              class="pixel-button pixel-text text-xl py-3 w-full">
+        REGISTER USER
+      </button>
+    </form>
+  </div>
+</body>
+</html>

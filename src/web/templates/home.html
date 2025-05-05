@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STARS - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body class="min-h-screen flex flex-col">
+  <nav class="absolute top-0 right-0 p-4">
+    <div class="flex space-x-6">
+      <a href="/login" class="pixel-text text-xl nav-link">LOGIN</a>
+      <a href="/signup" class="pixel-text text-xl nav-link">SIGN UP</a>
+    </div>
+  </nav>
+
+  <header class="container mx-auto px-4 py-8 text-left">
+    <div class="flex items-start md:items-center space-x-4">
+      <div class="satellite-icon"></div>
+      <div>
+        <h1 class="pixel-text text-5xl md:text-7xl mb-2 glow whitespace-nowrap block">
+          WELCOME TO STARS!
+        </h1>
+        <p class="pixel-text text-xl md:text-2xl text-teal-300">
+          Your gateway to real-time Earth &amp; space satellite images.
+        </p>
+      </div>
+    </div>
+    <div class="header-divider w-full mt-6"></div>
+  </header>
+  
+
+  <main class="flex-grow container mx-auto px-4 py-8">
+    <section class="mb-8 max-w-3xl">
+      <p class="pixel-text text-xl md:text-2xl leading-relaxed">
+        Here at STARS, we've built a global network of ground stations that
+        tune into analog APT signals from orbiting NOAA satellites. Each
+        transmission is decoded, stitched, and transformed into crisp, real-time
+        imagery of our planet and beyond. Whether you're just browsing the
+        public feed or syncing your own receiver, STARS makes satellite
+        photography accessible to everyone.
+      </p>
+    </section>
+    <section class="mb-8">
+      <p class="pixel-text text-xl mb-4">
+        Sign up or log in to access your personal dashboard, upload your own
+        captures, and customize your ground-station settings.
+      </p>
+    </section>
+    <section class="flex flex-col md:flex-row gap-6 mb-12">
+      <a href="/feed" class="pixel-button pixel-text text-2xl px-8 py-4">PUBLIC FEED</a>
+      <a href="/tracking" class="pixel-button pixel-text text-2xl px-8 py-4">
+        SATELLITE TRACKER
+      </a>
+    </section>
+    <section class="mb-12">
+      <a href="#" class="pixel-text text-xl nav-link inline-block mb-8">LEARN MORE</a>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div class="article-card p-6">
+          <h3 class="pixel-text text-xl text-teal-300 mb-2">
+            NOAA Satellite Imaging Explained
+          </h3>
+          <p class="pixel-text opacity-80">
+            Learn how NOAA satellites capture and transmit weather data from
+            orbit to your ground station.
+          </p>
+        </div>
+        <div class="article-card p-6">
+          <h3 class="pixel-text text-xl text-teal-300 mb-2">
+            Building Your Own Ground Station
+          </h3>
+          <p class="pixel-text opacity-80">
+            A step-by-step guide into ways of setting up a personal satellite reception
+            station on a budget.
+          </p>
+        </div>
+        <div class="article-card p-6">
+          <h3 class="pixel-text text-xl text-teal-300 mb-2">
+            The Future of Amateur Satellite Tracking
+          </h3>
+          <p class="pixel-text opacity-80">
+            Exploring upcoming technologies that will change, and thus improve how we
+            interact with satellites.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-6 text-center">
+    <p class="pixel-text text-sm opacity-70">© 2025 STARS • All Rights Reserved</p>
+  </footer>
+
+  <script src="{{ url_for('static', path='js/main.js') }}"></script>
+</body>
+</html>

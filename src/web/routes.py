@@ -1,8 +1,18 @@
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
 from core.database import SessionLocal, Image as ImageModel, User as UserModel
+from pathlib import Path
+import os
+
+print("[TEMPLATE DEBUG] Looking in:", Path(__file__).resolve().parent / "templates")
+
+TEMPLATE_DIR = Path(__file__).resolve().parent / "templates"
+templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
+
 
 router = APIRouter()
+templates = Jinja2Templates(directory="src/web/templates")
 
 def get_db_session():
     db = SessionLocal()
@@ -11,35 +21,41 @@ def get_db_session():
     finally:
         db.close()
 
-@router.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return """
-    <html>
-      <head><title>STARS Server</title></head>
-      <body>
-        <h1>Welcome to STARS Satellite Tracking Server</h1>
-        <p><a href="/feed">Public Feed</a> | <a href="/signup">Signup</a> | <a href="/login">Login</a></p>
-      </body>
-    </html>
-    """
+@router.get("/")
+def home(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
 
-@router.get("/feed", response_class=HTMLResponse)
-async def public_feed(request: Request, db: SessionLocal = Depends(get_db_session)):
+
+# @router.get("/feed")
+# def public_feed(request: Request, db: Session = Depends(get_db_session)):
+#     image_rows = (
+#         db.query(ImageModel)
+#         .filter_by(is_shared=True)
+#         .order_by(ImageModel.timestamp.desc())
+#         .all()
+#     )
+
+@router.get("/feed")
+def public_feed(request: Request, db: Session = Depends(get_db_session)):
     images = db.query(ImageModel).filter_by(is_shared=True).order_by(ImageModel.timestamp.desc()).all()
-    html = "<h1>🌍 Public Satellite Image Feed 🌍</h1><div>"
     for img in images:
-        owner = db.query(UserModel).get(img.user_id)
-        country = owner.country or "Unknown"
-        html += f"<div style='margin-bottom:20px;'>"
-        html += f"<h3>From {owner.username} ({country}) at {img.timestamp}</h3>"
-        html += f"<img src='/static/uploads/{img.filename}' style='max-width:600px;'/>"
-        html += "</div>"
-    html += "</div>"
-    return HTMLResponse(html)
+        img.url = f"/uploads/{img.filename}"
+    return templates.TemplateResponse("feed.html", {
+        "request": request,
+        "images": images
+    })
 
 
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+    images = []
+    for img in image_rows:
+        images.append({
+            "url": f"/uploads/{img.filename}",
+            "satellite": img.satellite,
+            "location": img.location,
+            "timestamp": img.timestamp.strftime("%Y-%m-%d %H:%M UTC")
+        })
 
-#router = APIRouter()
-
+    return templates.TemplateResponse("feed.html", {
+        "request": request,
+        "images": images
+    })

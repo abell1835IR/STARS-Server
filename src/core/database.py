@@ -26,6 +26,7 @@ class Image(Base):
     filename = Column(String, nullable=False)
     satellite_name = Column(String, nullable=False)
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    location = Column(String, nullable=True) 
     is_shared = Column(Boolean, default=False)
     owner = relationship("User", back_populates="images")
 
