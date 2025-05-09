@@ -1,7 +1,7 @@
 # STARS-Server 
 
 **STARS - Satellite Tracking And Reception System (Server Side)**  
-This is the server component of the STARS project — a full-stack satellite image reception platform designed to receive, display, and manage images from NOAA weather satellites. It operates alongside the STARS-Node utility, which handles signal decoding and image publishing via MQTT.
+This is the server component of the STARS project — a full-stack satellite image reception platform designed to receive, display, and manage images from NOAA weather satellites. It operates alongside the [STARS-SDR-Node](https://github.com/SamcraftSam/STARS-SDR-Node) utility, which handles signal decoding and image publishing via MQTT.
 
 ---
 
@@ -23,12 +23,12 @@ While many tools exist for decoding satellite imagery, there's a lack of modular
 - Store metadata (satellite name, timestamp, location)
 - Receive data over MQTT and store it automatically
 - Render a retro-styled frontend with image previews
-- Serve static image assets from disk (`/uploads` or `/received`)
+- Serve static image assets from disk (`/uploads`)
 - Provide user authentication for future expansion
 
 ### Non-Functional Requirements
 - Cross-platform compatibility (Linux development focus)
-- Fully responsive UI (mobile & desktop)
+- Responsive UI (mobile & desktop)
 - Uses modern Python stack (FastAPI, SQLAlchemy, Jinja2)
 - Modular codebase with OOP principles
 - Secure and extensible for future services (bots, APIs, etc.)
@@ -36,14 +36,12 @@ While many tools exist for decoding satellite imagery, there's a lack of modular
 ---
 
 ## 🧱 Design and Implementation
-
-### Object-Oriented Design Principles
+<!-- ### Object-Oriented Design Principles
 The project applies all core pillars of OOP:
 - **Encapsulation**: Image, User, and Config logic isolated in modules
 - **Abstraction**: Interfaces for MQTT receiver and image handlers
 - **Inheritance**: MQTT handler extends generic interface
 - **Polymorphism**: Pluggable backend for image handling and UI rendering
-
 ### Architecture Overview
 stars-server/
 ├── config/ ← YAML-based config parser
@@ -51,8 +49,7 @@ stars-server/
 ├── web/ ← HTML templates, static assets, routes
 ├── auth/ ← Login/signup routing
 ├── mqtt_receiver.py ← Image receiver over MQTT
-├── main.py ← FastAPI app entry
-
+├── main.py ← FastAPI app entry -->
 
 ### Key Technologies
 - **FastAPI** – RESTful web framework
@@ -92,22 +89,6 @@ stars-server/
 - Responsive image previews with timestamp and location
 - Sorting dropdown and pagination ready
 - Automatic image ingestion over MQTT
-
----
-
-## 🧪 Testing and Validation
-
-### Testing Approach
-- Manual testing of MQTT receiver (publish fake payloads)
-- Verified DB updates and saved files in `/uploads`
-- Manually viewed rendered HTML pages in browser
-- Functional verification: 
-  - Routes load as expected
-  - Template rendering works
-  - Metadata is shown with correct formatting
-
-### Unit Testing
-_(To be implemented.)_
 
 ---
 

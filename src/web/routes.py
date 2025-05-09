@@ -26,15 +26,6 @@ def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-# @router.get("/feed")
-# def public_feed(request: Request, db: Session = Depends(get_db_session)):
-#     image_rows = (
-#         db.query(ImageModel)
-#         .filter_by(is_shared=True)
-#         .order_by(ImageModel.timestamp.desc())
-#         .all()
-#     )
-
 @router.get("/feed")
 def public_feed(request: Request, db: Session = Depends(get_db_session)):
     images = db.query(ImageModel).filter_by(is_shared=True).order_by(ImageModel.timestamp.desc()).all()
