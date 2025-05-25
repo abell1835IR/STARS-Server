@@ -2,7 +2,7 @@ from pathlib import Path
 from sqlalchemy import (
     create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
 )
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import datetime
 
@@ -32,3 +32,10 @@ class Image(Base):
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+
+
+# if __name__ == "__main__":
+#     import os
+#     print("[DEBUG] CWD:", os.getcwd())
+#     print("[DEBUG] DB Path:", os.path.abspath("stars.db"))
+#     init_db()

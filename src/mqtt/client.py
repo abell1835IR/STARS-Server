@@ -13,7 +13,7 @@ class IMessageHandler(Protocol):
 
 
 class ImageStorageHandler:
-    def __init__(self, save_dir="received"):
+    def __init__(self, save_dir="src/web/static/uploads/"):
         self.save_dir = Path(save_dir)
         self.save_dir.mkdir(parents=True, exist_ok=True)
 
@@ -81,6 +81,6 @@ class MQTTReceiver:
 
 if __name__ == "__main__":
     print("[*] MQTT receiver running")
-    handler = ImageStorageHandler(save_dir="received")
+    handler = ImageStorageHandler(save_dir="src/web/static/uploads/")
     receiver = MQTTReceiver(handler, broker_host="broker.hivemq.com", topic="apt/images")
     receiver.start()

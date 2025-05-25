@@ -1,8 +1,9 @@
 from datetime import datetime
-from src.core.database import SessionLocal, Image
+from core.database import SessionLocal, Image, init_db
 
 def insert_test_images():
     db = SessionLocal()
+    init_db()
 
     sample_data = [
         {
